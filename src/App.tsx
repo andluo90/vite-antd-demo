@@ -56,7 +56,8 @@ const ybarOption = {
 
   }],
   xAxis: [{
-    type: "value"
+    type: "value",
+    position: "top"
   }],
   series: [{
     name: "营业部分布",
@@ -149,7 +150,7 @@ const CustChart = (props) => {
   //   }
   // }, [collapsed]);
   const getRandomNum = ():number => {
-    return Math.floor(Math.random()*100)
+    return Math.floor(Math.random()*500)
   }
   useEffect(() => {
     console.log('effect...');
@@ -221,7 +222,7 @@ CustChart.propTypes = {
   type: PropTypes.string.isRequired
 };
 
-const renderCharts = () => [...new Array(1).keys()].map((i) => (
+const renderCharts = () => [...new Array(10).keys()].map((i) => (
     <React.Fragment>
       <Card.Grid style={gridStyle}>
         <LazyLoad
@@ -239,12 +240,13 @@ const renderCharts = () => [...new Array(1).keys()].map((i) => (
           <CustChart option={ringOption} type="pie" />
         </LazyLoad>
       </Card.Grid>
+
       <Card.Grid style={gridStyle}>
         <LazyLoad
           // scrollContainer="#custReact-layout-content"
           height={400}
         >
-          <CustChart option={ybarOption} type="bar" />
+          <CustChart option={roundOption} type="pie" />
         </LazyLoad>
       </Card.Grid>
       <Card.Grid style={gridStyle}>
@@ -252,7 +254,7 @@ const renderCharts = () => [...new Array(1).keys()].map((i) => (
           // scrollContainer="#custReact-layout-content"
           height={400}
         >
-          <CustChart option={roundOption} type="pie" />
+          <CustChart option={ybarOption} type="bar" />
         </LazyLoad>
       </Card.Grid>
     </React.Fragment>
