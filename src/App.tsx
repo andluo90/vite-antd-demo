@@ -1,42 +1,73 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import 'antd/dist/antd.css';
 import ReactECharts from 'echarts-for-react';
 import LazyLoad from 'react-lazyload';
 import PropTypes from 'prop-types';
+import {Button, Card} from 'antd'
 
-const barOption = {
-  // color: ["#3398DB"],
+const gridStyle = {
+  width: '50%',
+  textAlign: 'center',
+};
+
+
+
+const xbarOption = {
   tooltip: {
     trigger: "axis",
-    // axisPointer: {
-    //   label: {
-    //     show:true
-    //   },
-    //   type: "shadow"
-    // }
-    formatter: '详情：<br />系列名称: {a}<br />类目值：{b}<br />数值：{c}<br />'
+    // formatter: '详情：<br />系列名称: {a}<br />类目值：{b}<br />数值：{c}<br />'
 
   },
   legend: {
-    show: true
+    show: true,
+    bottom: "0%",
   },
   grid: {},
   xAxis: [{
     type: "category",
-    // data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    data: ["股票A股", "股票H股", "基金", "债券", "混合型", "打新", "其它"],
 
   }],
   yAxis: [{
     type: "value"
   }],
   series: [{
-    name: "直接访问",
+    name: "投资偏好",
     type: "bar",
     barWidth: "60%",
-    data: [10, 52, 200, 334, 390, 330, 220]
+    data: []
   }]
 }
 
-const pieOption = {
+const ybarOption = {
+  tooltip: {
+    trigger: "axis",
+    // formatter: '详情：<br />系列名称: {a}<br />类目值：{b}<br />数值：{c}<br />'
+
+  },
+  legend: {
+    show: true,
+    bottom: "0%",
+  },
+  grid: {},
+  yAxis: [{
+    type: "category",
+    data: ["营业部A", "营业部A", "营业部B", "营业部C", "营业部D", "营业部E", "营业部F"],
+
+  }],
+  xAxis: [{
+    type: "value"
+  }],
+  series: [{
+    name: "营业部分布",
+    type: "bar",
+    barWidth: "60%",
+    data: []
+  }]
+}
+
+// 圆环
+const ringOption = {
   title: {
     text: '账户资产规模分布',
     left: 'center',
@@ -54,13 +85,41 @@ const pieOption = {
   legend: {
     show: true,
     bottom: "0%",
-    // padding: [40, 0, 0, 0]
   },
   series: [
     {
       type: 'pie',
       data: [],
       radius: ['50%', '70%'],
+    }
+  ]
+};
+
+// 圆形
+const roundOption = {
+  title: {
+    text: '账户资产规模分布',
+    // left: 'center',
+    // top: 'center'
+  },
+  tooltip: {
+    trigger: "item",
+    axisPointer: {
+      type: "shadow",
+      label: {
+        show:true
+      },
+    }
+  },
+  legend: {
+    show: true,
+    bottom: "0%",
+  },
+  series: [
+    {
+      type: 'pie',
+      data: [],
+      radius: '50%',
     }
   ]
 };
@@ -89,7 +148,9 @@ const CustChart = (props) => {
   //     chartIns.hideLoading();
   //   }
   // }, [collapsed]);
-
+  const getRandomNum = ():number => {
+    return Math.floor(Math.random()*100)
+  }
   useEffect(() => {
     console.log('effect...');
   }, []);
@@ -102,37 +163,37 @@ const CustChart = (props) => {
             {
               data: [
                 {
-                  value: 635,
+                  value: 635+getRandomNum(),
                   name: '中等收入'
                 },
                 {
-                  value: 89,
+                  value: 89+getRandomNum(),
                   name: '高净值'
                 },
                 {
-                  value: 1548,
+                  value: 1548+getRandomNum(),
                   name: '普通收入'
                 },
                 {
-                  value: 600,
+                  value: 600+getRandomNum(),
                   name: '未知'
                 }
               ],
             }
           ]
         });
-      } else {
+      } else if(props.type === 'bar') {
         charts.setOption({
           series: [
             {
-              data: [820, 932, 901, 934, 1290, 1330, 1320]
+              data: [820+getRandomNum(), 932+getRandomNum(), 901+getRandomNum(), 934+getRandomNum(), 1290+getRandomNum(), 1330+getRandomNum(), 1320+getRandomNum()]
             }
           ]
         });
       }
 
       charts.hideLoading();
-    }, 1000);
+    }, 500);
   };
   const onChartReady = (echarts) => {
     console.log('onChartReady....');
@@ -161,20 +222,42 @@ CustChart.propTypes = {
 };
 
 const renderCharts = () => [...new Array(1).keys()].map((i) => (
-  <div style={{ display: 'flex' }}>
-    <LazyLoad
-      // scrollContainer="#custReact-layout-content" // 需要知道是哪个div在滚动才能正常懒加载
-      height={400}
-    >
-      <CustChart option={barOption} type="bar" />
-    </LazyLoad>
-    <LazyLoad
-      // scrollContainer="#custReact-layout-content"
-      height={400}
-    >
-      <CustChart option={pieOption} type="pie" />
-    </LazyLoad>
-  </div>
+    <React.Fragment>
+      <Card.Grid style={gridStyle}>
+        <LazyLoad
+          // scrollContainer="#custReact-layout-content" // 需要知道是哪个div在滚动才能正常懒加载
+          height={400}
+        >
+          <CustChart option={xbarOption} type="bar" />
+        </LazyLoad>
+      </Card.Grid>
+      <Card.Grid style={gridStyle}>
+        <LazyLoad
+          // scrollContainer="#custReact-layout-content"
+          height={400}
+        >
+          <CustChart option={ringOption} type="pie" />
+        </LazyLoad>
+      </Card.Grid>
+      <Card.Grid style={gridStyle}>
+        <LazyLoad
+          // scrollContainer="#custReact-layout-content"
+          height={400}
+        >
+          <CustChart option={ybarOption} type="bar" />
+        </LazyLoad>
+      </Card.Grid>
+      <Card.Grid style={gridStyle}>
+        <LazyLoad
+          // scrollContainer="#custReact-layout-content"
+          height={400}
+        >
+          <CustChart option={roundOption} type="pie" />
+        </LazyLoad>
+      </Card.Grid>
+    </React.Fragment>
+
+    
 ));
 
 /**
@@ -183,7 +266,7 @@ const renderCharts = () => [...new Array(1).keys()].map((i) => (
  */
 const Page = () => (
   <div id="chartPage">
-    {renderCharts()}
+        {renderCharts()}
   </div>
 );
 
