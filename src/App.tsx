@@ -8,6 +8,7 @@ import { useInView } from "react-intersection-observer";
 const gridStyle = {
   width: '50%',
   textAlign: 'center',
+  height:'480px'
 };
 
 
@@ -194,7 +195,7 @@ const CustChart = (props) => {
       }
 
       charts.hideLoading();
-    }, 3000);
+    }, 1000);
   };
   const onChartReady = (echarts) => {
     console.log('onChartReady....');
@@ -225,37 +226,25 @@ CustChart.propTypes = {
 const renderCharts = () => [...new Array(10).keys()].map((i) => (
     <React.Fragment>
       <Card.Grid style={gridStyle}>
-        <LazyLoad
-          // scrollContainer="#custReact-layout-content" // 需要知道是哪个div在滚动才能正常懒加载
-          height={400}
-        >
+        <ScrollView>
           <CustChart option={xbarOption} type="bar" />
-        </LazyLoad>
+        </ScrollView>
       </Card.Grid>
       <Card.Grid style={gridStyle}>
-        <LazyLoad
-          // scrollContainer="#custReact-layout-content"
-          height={400}
-        >
+        <ScrollView>
           <CustChart option={ringOption} type="pie" />
-        </LazyLoad>
+        </ScrollView>
       </Card.Grid>
 
       <Card.Grid style={gridStyle}>
-        <LazyLoad
-          // scrollContainer="#custReact-layout-content"
-          height={400}
-        >
+        <ScrollView>
           <CustChart option={roundOption} type="pie" />
-        </LazyLoad>
+        </ScrollView>
       </Card.Grid>
       <Card.Grid style={gridStyle}>
-        <LazyLoad
-          // scrollContainer="#custReact-layout-content"
-          height={400}
-        >
-          <CustChart option={ybarOption} type="bar" />
-        </LazyLoad>
+        <ScrollView>
+          <CustChart option={ybarOption} type="pie" />
+        </ScrollView>
       </Card.Grid>
     </React.Fragment>
 
@@ -272,7 +261,6 @@ const ScrollView = (props) => {
   const [ifShow,setIfShow] = useState(false)
   useEffect(()=>{
     if(inView){
-      console.log('获取数据...');
       if(ifShow === false){
         console.log('显示报表...');
         setIfShow(true)
@@ -282,10 +270,7 @@ const ScrollView = (props) => {
   },[inView])
   return (
     <div ref={ref}>
-      <h2>
-        Element is inside the viewport: <strong>{inView.toString()}</strong>
         {ifShow && props.children}
-      </h2>
     </div>
   )
 
@@ -297,12 +282,8 @@ const ScrollView = (props) => {
  */
  const Page = () => (
   <div id="chartPage">
-        {/* {renderCharts()} */}
-        <div style={{height:'102vh'}}>uuu</div>
-        <ScrollView>
-          <CustChart option={ybarOption} type="bar" />
-        </ScrollView>
-        <div style={{height:'400px'}}>xxx</div>
+        {renderCharts()}
+
   </div>
 );
 
