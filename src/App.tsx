@@ -4,7 +4,7 @@ import ReactECharts from 'echarts-for-react';
 import LazyLoad from 'react-lazyload';
 import PropTypes from 'prop-types';
 import {Button, Card} from 'antd'
-
+import { useInView } from "react-intersection-observer";
 const gridStyle = {
   width: '50%',
   textAlign: 'center',
@@ -194,7 +194,7 @@ const CustChart = (props) => {
       }
 
       charts.hideLoading();
-    }, 500);
+    }, 3000);
   };
   const onChartReady = (echarts) => {
     console.log('onChartReady....');
@@ -262,13 +262,47 @@ const renderCharts = () => [...new Array(10).keys()].map((i) => (
     
 ));
 
+
+
+const ScrollView = (props) => {
+  const { ref, inView } = useInView({
+    threshold: 0
+
+  });
+  const [ifShow,setIfShow] = useState(false)
+  useEffect(()=>{
+    if(inView){
+      console.log('获取数据...');
+      if(ifShow === false){
+        console.log('显示报表...');
+        setIfShow(true)
+      }
+    }
+    
+  },[inView])
+  return (
+    <div ref={ref}>
+      <h2>
+        Element is inside the viewport: <strong>{inView.toString()}</strong>
+        {ifShow && props.children}
+      </h2>
+    </div>
+  )
+
+}
+
 /**
  * 模拟生成40张图表，异步加载数据+懒加载 demo
  * @returns
  */
-const Page = () => (
+ const Page = () => (
   <div id="chartPage">
-        {renderCharts()}
+        {/* {renderCharts()} */}
+        <div style={{height:'102vh'}}>uuu</div>
+        <ScrollView>
+          <CustChart option={ybarOption} type="bar" />
+        </ScrollView>
+        <div style={{height:'400px'}}>xxx</div>
   </div>
 );
 
