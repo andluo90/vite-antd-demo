@@ -53,6 +53,7 @@ const UserList = () => {
           setDataSource(response.data.resultObj)
         }else{
           message.error(response.data.resultMsg)
+          setDataSource([])
         }
       })
       .catch((error) => {

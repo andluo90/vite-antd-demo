@@ -11,9 +11,12 @@ const Coffee: React.FC = () => {
   const text = actionType === 'login'?'登陆':'注册'
 
   const onFinish = (values: any) => {
+
     console.log('Success:', values);
+    const endPoint = actionType === 'login' ? 'sign-in' :'sign-up'
+    const url = `/api/authentication/${endPoint}`
     axios
-    .post("/api/authentication/sign-up",values)
+    .post(url,values)
     .then((response) => {
       // 处理成功响应
       console.log(response.data);
