@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
 import { Button, Col, Row, Table, message ,Modal,Form} from "antd";
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+
 import type { ColumnsType } from "antd/es/table";
 import axios from "axios";
 import BrandForm from './BrandForm'
+
+
+const {confirm} = Modal
 
 interface DataType {
   id:number;
@@ -13,7 +18,7 @@ interface DataType {
   flavors: string[];
 }
 
-const getColumn = (edit:(record:DataType)=>void):ColumnsType<DataType> => {
+const getColumn = (edit:(record:DataType)=>void,del:(record:DataType)=>void):ColumnsType<DataType> => {
 
   const columns: ColumnsType<DataType> = [
     {
@@ -49,7 +54,12 @@ const getColumn = (edit:(record:DataType)=>void):ColumnsType<DataType> => {
       dataIndex: "operate",
       key: "operate",
       render:(text:string,record)=>{
-        return <Button type="link" onClick={()=>edit(record)}>修改</Button>
+        return (
+          <>
+            <Button type="link" onClick={()=>edit(record)}>修改</Button>
+            <Button type="link" onClick={()=>del(record)}>删除</Button>
+          </>
+        )
       }
     },
   ];
@@ -124,6 +134,46 @@ const BrandList = () => {
 
   }
 
+  const showPromiseConfirm = (id) => {
+    confirm({
+      title: '确定删除？',
+      icon: <ExclamationCircleOutlined />,
+      onOk() {
+        return new Promise((resolve, reject) => {
+
+          axios
+          .delete(`/api/coffees/${id}`)
+          .then((response) => {
+            // 处理成功响应
+            if(response.data.resultCode == 200){
+              console.log(response.data);
+              message.success('删除成功.')
+              resolve('删除成功')
+            }else{
+              message.error(response.data.resultMsg)
+              reject('删除失败')
+            }
+    
+          })
+          .catch((error) => {
+            // 处理错误
+            console.error(error);
+          })
+
+          setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
+        }).catch(() => console.log('Oops errors!'));
+      },
+      onCancel() {},
+    });
+  };
+
+  const del = (record:DataType)=>{
+    console.log(`del`,record);
+    showPromiseConfirm(record.id)
+
+  }  
+  
+
   const handleOk = () => {
     setConfirmLoading(true);
     setTimeout(() => {
@@ -151,7 +201,7 @@ const BrandList = () => {
           <Table
           rowKey={'id'}
           loading={loading} 
-          columns={getColumn(edit)} 
+          columns={getColumn(edit,del)} 
           dataSource={dataSource} />
         </Col>
       </Row>
