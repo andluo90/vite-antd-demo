@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import 'antd/dist/antd.css';
 import BrandList from './BrandList'
-import Coffee from './Coffee'
+import Login from './Login'
 import UserList from './UserList'
 
 
@@ -17,7 +17,7 @@ import UserList from './UserList'
     <h2>用户列表</h2>
     <UserList />
     <div style={{marginTop:24}}>
-      <Coffee />
+      <Login />
     </div>
   </div>
 );
