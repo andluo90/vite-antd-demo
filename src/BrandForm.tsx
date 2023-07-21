@@ -7,33 +7,62 @@ import React from 'react';
 
 const {Option} = Select
 
-const BrandForm: React.FC = () => {
+interface Props {
+  editId:number
+  form:any,
+  formType:'edit'|'new'
+}
+
+const BrandForm: React.FC<Props> = (props) => {
+  const {form,formType,editId} = props
   const [loading, setLoading] = useState(false);
-    
-  
 
   const onFinish = (values: any) => {
-    console.log('Success:', values);
+    console.log('onFinish:', values);
     setLoading(true)
-    axios
-      .post("/api/coffees",values)
-      .then((response) => {
-        // 处理成功响应
-        if(response.data.resultCode == 200){
-          console.log(response.data);
-          message.success('提交成功.')
-        }else{
-          message.error(response.data.resultMsg)
-        }
 
-      })
-      .catch((error) => {
-        // 处理错误
-        console.error(error);
-      })
-      .finally(()=>{
-        setLoading(false)
-      })
+    if(formType === 'edit'){
+        axios
+          .patch(`/api/coffees/${editId}`,values)
+          .then((response) => {
+            // 处理成功响应
+            if(response.data.resultCode == 200){
+              console.log(response.data);
+              message.success('提交成功.')
+            }else{
+              message.error(response.data.resultMsg)
+            }
+    
+          })
+          .catch((error) => {
+            // 处理错误
+            console.error(error);
+          })
+          .finally(()=>{
+            setLoading(false)
+          })
+    }else{
+        axios
+          .post("/api/coffees",values)
+          .then((response) => {
+            // 处理成功响应
+            if(response.data.resultCode == 200){
+              console.log(response.data);
+              message.success('提交成功.')
+            }else{
+              message.error(response.data.resultMsg)
+            }
+    
+          })
+          .catch((error) => {
+            // 处理错误
+            console.error(error);
+          })
+          .finally(()=>{
+            setLoading(false)
+          })
+    }
+
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -46,6 +75,7 @@ const BrandForm: React.FC = () => {
 
   return (
     <Form
+      form={props.form}
       name="basic"
       labelCol={{ span: 6 }}
       wrapperCol={{ span: 18 }}

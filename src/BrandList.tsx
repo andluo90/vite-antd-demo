@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import { Button, Col, Row, Table, message ,Modal} from "antd";
+import { Button, Col, Row, Table, message ,Modal,Form} from "antd";
 import type { ColumnsType } from "antd/es/table";
 import axios from "axios";
 import BrandForm from './BrandForm'
 
 interface DataType {
+  id:number;
   key: string;
   name: string;
-  age: number;
-  address: string;
-  tags: string[];
+  description: number;
+  brand: string;
+  flavors: string[];
 }
 
 const getColumn = (edit:(record:DataType)=>void):ColumnsType<DataType> => {
@@ -60,6 +61,7 @@ const getColumn = (edit:(record:DataType)=>void):ColumnsType<DataType> => {
 
 
 const BrandList = () => {
+  const [form] = Form.useForm();
   const [dataSource, setDataSource] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentRecord, setCurrentRecord] = useState<DataType>();
@@ -98,10 +100,26 @@ const BrandList = () => {
     getData()
   }
 
+  const add = () => {
+    setCurrentRecord(undefined)
+    form.setFieldsValue({})
+    setIfEdit(true)
+
+  }
+
   const edit = (record:DataType)=>{
     console.log(`edit`,record);
     
     setCurrentRecord(record)
+    const values = {
+      id:record.id,
+      name:record.name,
+      description:record.description,
+      brand:record.brand,
+      flavors:record?.flavors?.map(i=>i.name) || []
+
+    }
+    form.setFieldsValue(values)
     setIfEdit(true)
 
   }
@@ -123,7 +141,9 @@ const BrandList = () => {
       
       <Row gutter={[8,24]}>
         <Col span={12}>
-          <Button type="primary" onClick={search}>查询</Button>
+          <Button style={{marginRight:24}} type="primary" onClick={search}>查询</Button>
+          <Button type="primary" onClick={add}>新增</Button>
+
         </Col>
       </Row>
       <Row gutter={[8,24]}>
@@ -136,14 +156,18 @@ const BrandList = () => {
         </Col>
       </Row>
       <Modal
-        title="编辑"
-        // open={ifEdit}
+        destroyOnClose
+        title={currentRecord?'编辑':'新建'}
         visible={ifEdit}
         onOk={handleOk}
         confirmLoading={confirmLoading}
         onCancel={handleCancel}
       >
-       <BrandForm></BrandForm>
+       <BrandForm 
+        editId={currentRecord ? currentRecord.id : 0}
+        formType={currentRecord ? 'edit':'new'}
+        form={form}
+        />
       </Modal>
     </div>
   )
